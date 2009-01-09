@@ -1358,6 +1358,21 @@ function buildProcessing( curElement ){
     // Shortcut for drawing a circle
     if ( width == height )
       curContext.arc( x - offsetStart, y - offsetStart, width / 2, 0, Math.PI * 2, false );
+    else {
+      // Added by baoilleach, taken from a blog post by Christopher Clay
+      // at http://canvaspaint.org/blog/2006/12/ellipse/
+      var KAPPA = 4 * ((Math.sqrt(2) -1) / 3);
+      var rx = width/2;
+      var ry = height/2;
+      var cx = x;
+      var cy = y;
+
+      curContext.moveTo(cx, cy - ry);
+      curContext.bezierCurveTo(cx + (KAPPA * rx), cy - ry,  cx + rx, cy - (KAPPA * ry), cx + rx, cy);
+      curContext.bezierCurveTo(cx + rx, cy + (KAPPA * ry), cx + (KAPPA * rx), cy + ry, cx, cy + ry);
+      curContext.bezierCurveTo(cx - (KAPPA * rx), cy + ry, cx - rx, cy + (KAPPA * ry), cx - rx, cy);
+      curContext.bezierCurveTo(cx - rx, cy - (KAPPA * ry), cx - (KAPPA * rx), cy - ry, cx, cy - ry);
+    }
   
     if ( doFill )
       curContext.fill();
